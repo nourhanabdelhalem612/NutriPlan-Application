@@ -181,7 +181,7 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-3 overflow-x-auto pb-2">
+          <div id="areas-grid" class=" flex items-center gap-3 overflow-x-auto pb-2">
             <button
               class="px-4 py-2 bg-emerald-600 text-white rounded-full font-medium text-sm whitespace-nowrap hover:bg-emerald-700 transition-all"
             >
@@ -190,7 +190,7 @@
             <button
               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium text-sm whitespace-nowrap hover:bg-gray-200 transition-all"
             >
-              Egyptain
+              Egyptian
             </button>
           </div>
         </div>
@@ -216,7 +216,7 @@
 
           <div id="categories-grid" class="grid grid-cols-6 gap-3">
             <!-- Categories will be loaded here by JavaScript -->
-            <div
+            <!-- <div
               class="category-card bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-3 border border-emerald-200 hover:border-emerald-400 hover:shadow-md cursor-pointer transition-all group"
               data-category="Beef"
             >
@@ -230,7 +230,7 @@
                   <h3 class="text-sm font-bold text-gray-900">Beef</h3>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </section>
@@ -264,9 +264,9 @@
             </div>
           </div>
 
-          <div id="recipes-grid" class="grid grid-cols-4 gap-5">
+          <div id="recipesGrid" class="grid grid-cols-4 gap-5">
             <!-- Recipes will be loaded here by JavaScript -->
-            <div
+            <!-- <div
               class="recipe-card bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer group"
               data-meal-id="52772"
             >
@@ -310,12 +310,12 @@
                   </span>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </section>
 
-      <section id="meal-details" class="px-8 py-8 bg-gray-50">
+      <section id="meal-details" class="px-8 py-8 bg-gray-50 hidden">
         <div class="max-w-7xl mx-auto">
           <!-- Back Button -->
           <button
@@ -400,7 +400,7 @@
                     >9 items</span
                   >
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div id="ingredients" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div
                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors"
                   >
@@ -526,7 +526,7 @@
                   <i class="fa-solid fa-shoe-prints text-emerald-600"></i>
                   Instructions
                 </h2>
-                <div class="space-y-4">
+                <div id="instructions" class="space-y-4">
                   <div
                     class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors"
                   >
@@ -752,7 +752,7 @@
       </section>
 
       <!-- ============= PRODUCT SCANNER SECTION ============= -->
-      <section id="products-section" class="px-8 py-8 bg-gray-50 min-h-screen">
+      <section id="products-section" class="px-8 py-8 bg-gray-50 min-h-screen hidden">
         <div class="max-w-7xl mx-auto">
           <!-- Search Header -->
           <div
@@ -988,7 +988,7 @@
       </section>
 
       <!-- ============= FOOD LOG SECTION ============= -->
-      <section id="foodlog-section" class="px-8 py-8 bg-gray-50 min-h-screen">
+      <section id="foodlog-section" class="px-8 py-8 bg-gray-50 min-h-screen hidden">
         <div class="max-w-7xl mx-auto">
           <!-- Page Header -->
           <div
