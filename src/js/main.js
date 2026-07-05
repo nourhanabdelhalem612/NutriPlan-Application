@@ -1,12 +1,11 @@
 class Navigation {
-    constructor() {
+    constructor(){
         this.navLinks = document.querySelectorAll('.nav-link');
         this.sections = {
             'Meals & Recipes': document.getElementById('meals-section'),
             'Product Scanner': document.getElementById('products-section'),
             'Food Log': document.getElementById('foodlog-section')
         };
-        
         this.init();
     }
 
@@ -20,7 +19,6 @@ class Navigation {
     }
 
     setActive(activeLink) {
-        // 1. تحديث شكل الروابط (CSS classes)
         this.navLinks.forEach(link => {
             link.classList.remove('bg-emerald-50', 'text-emerald-700');
             link.classList.add('text-gray-600');
@@ -30,8 +28,6 @@ class Navigation {
         activeLink.classList.add('bg-emerald-50', 'text-emerald-700');
         activeLink.classList.replace('text-gray-600', 'text-emerald-700');
         activeLink.querySelector('span').classList.replace('font-medium', 'font-semibold');
-
-        // 2. إخفاء وإظهار الأقسام
         const sectionName = activeLink.querySelector('span').innerText;
         Object.values(this.sections).forEach(sec => sec?.classList.add('hidden'));
         if (this.sections[sectionName]) {
@@ -45,6 +41,10 @@ class NutriPlanApp{
     constructor(){
         this.recipesGrid = document.getElementById('recipesGrid');
         this.baseUrl = 'https://nutriplan-api.vercel.app/api'; 
+
+        this.currentMeal= null;
+        this.currentNutrition= null;
+
         this.init();
     }
 
@@ -52,12 +52,31 @@ class NutriPlanApp{
         await this.fetchAndDisplayMeals('/meals/search?name='); 
         await this.fetchCategories();
         await this.fetchAreas();
+
         this.addCategoryEvents();
         this.addAreaEvents();
         this.addMealEvents();
 
+        this.renderFoodLog();
+
+        document.getElementById("log-meal-btn").addEventListener("click", () => {
+            this.addMealToFoodLog();
+        });
+
+        document.getElementById("foodlog-btn").addEventListener("click", () => {
+            this.showFoodLog();
+        });
+
+        document.getElementById("clear-foodlog").addEventListener("click", () => {
+            this.clearFoodLog();
+        });
     }
     
+    clearFoodLog(){
+        localStorage.removeItem("foodLog");
+        this.renderFoodLog();
+    }
+
     addMealEvents(){
         this.recipesGrid.addEventListener("click", (e) => {
             const card = e.target.closest(".recipe-card");
@@ -77,7 +96,182 @@ class NutriPlanApp{
         const meal = meals[0];
         document.getElementById("all-recipes-section").classList.add("hidden");
         document.getElementById("meal-details").classList.remove("hidden");
+        document.getElementById("areas-grid").style.display = "none";
+        document.getElementById("meal-categories-section").style.display = "none";
+        document.getElementById("search-filters-section").style.display = "none";
         this.renderMealDetails(meal);
+        const nutrition = await this.analyzeNutrition(meal);
+
+        // console.log("Meal:", meal);
+        // console.log("Nutrition:", nutrition);
+        this.renderNutrition(nutrition);
+        
+        this.currentMeal= meal;
+        this.currentNutrition= nutrition;
+
+        console.log("Saved Meal:", this.currentMeal);
+        console.log("Saved Nutrition:", this.currentNutrition);
+    }
+
+    async analyzeNutrition(meal){
+        const response = await fetch(`${this.baseUrl}/nutrition/analyze`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": "cFfwEE3PGV0MmSVeoJNajw1qee1Can6UdL6uqeQu"
+            },
+            body: JSON.stringify({
+                recipeName: meal.name,
+                ingredients: meal.ingredients.map(item =>
+                    `${item.measure} ${item.ingredient}`
+                )
+            })
+        });
+
+        const data = await response.json();
+        return data.data;
+    }
+
+    renderNutrition(nutrition){
+        document.getElementById("hero-calories").textContent =nutrition.perServing.calories + " cal";
+        document.getElementById("protein").textContent =nutrition.perServing.protein + " g";
+        document.getElementById("fat").textContent =nutrition.perServing.fat + " g";
+        document.getElementById("carbs").textContent =nutrition.perServing.carbs + " g";
+        document.getElementById("fiber").textContent =nutrition.perServing.fiber + " g";
+        document.getElementById("sugar").textContent =nutrition.perServing.sugar + " g";
+        document.getElementById("saturated-fat").textContent =nutrition.perServing.saturatedFat + " g";
+        document.getElementById("cholesterol").textContent =nutrition.perServing.cholesterol + " mg";
+        document.getElementById("sodium").textContent =nutrition.perServing.sodium + " mg";
+    }
+
+    addMealToFoodLog(){
+        console.log(this.currentMeal);
+        console.log(this.currentNutrition);
+        let foodLog = JSON.parse(localStorage.getItem("foodLog")) || [];
+        foodLog.push({
+        name: this.currentMeal.name,
+        image: this.currentMeal.thumbnail,
+        calories: this.currentNutrition.perServing.calories,
+        protein: this.currentNutrition.perServing.protein,
+        carbs: this.currentNutrition.perServing.carbs,
+        fat: this.currentNutrition.perServing.fat
+    });
+        localStorage.setItem("foodLog", JSON.stringify(foodLog));
+        this.renderFoodLog();
+        alert("Meal Added");
+    }
+
+    renderFoodLog(){
+        const foodLog = JSON.parse(localStorage.getItem("foodLog")) || [];
+        const list = document.getElementById("logged-items-list");
+        if(foodLog.length === 0){
+            list.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+                <p>No meals logged today</p>
+            </div>`;
+            return;
+        }
+        list.innerHTML = "";
+        let calories = 0;
+        let protein = 0;
+        let carbs = 0;
+        let fat = 0;
+        foodLog.forEach((item, index) => {
+            calories += item.calories;
+            protein += item.protein;
+            carbs += item.carbs;
+            fat += item.fat;
+            list.innerHTML += `
+            <div class="bg-gray-50 hover:bg-gray-100 rounded-2xl p-4 flex justify-between items-center transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-200">
+                        <img
+                            src="${item.image}"
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800">
+                            ${item.name}
+                        </h3>
+                        <p class="text-sm text-emerald-600">
+                            1 Serving • Recipe
+                        </p>
+                        <p class="text-xs text-gray-400">
+                            ${new Date().toLocaleTimeString([], {
+                                hour:'2-digit',
+                                minute:'2-digit'
+                            })}
+                        </p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h2 class="text-3xl font-bold text-emerald-600">
+                        ${item.calories}
+                    </h2>
+                    <p class="text-gray-500 text-sm mb-2">
+                        kcal
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                            ${item.protein}g P
+                        </span>
+                        <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">
+                            ${item.carbs}g C
+                        </span>
+                        <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">
+                            ${item.fat}g F
+                        </span>
+                        <button
+                            class="delete-meal text-red-500 hover:text-red-700"
+                            data-index="${index}"
+                        >
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+        document.querySelectorAll(".delete-meal").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const index = e.currentTarget.dataset.index;
+                this.deleteMeal(index);
+            });
+        });
+        document.getElementById("logged-count").textContent =`Logged Items (${foodLog.length})`;
+        document.getElementById("total-calories").textContent =`${calories} / 2000 kcal`;
+        document.getElementById("total-protein").textContent =`${protein} / 50 g`;
+        document.getElementById("total-carbs").textContent =`${carbs} / 250 g`;
+        document.getElementById("total-fat").textContent =`${fat} / 65 g`;
+        document.getElementById("calories-progress").style.width =`${Math.min(calories / 2000 * 100,100)}%`;
+        document.getElementById("protein-progress").style.width =`${Math.min(protein / 50 * 100,100)}%`;
+        document.getElementById("carbs-progress").style.width =`${Math.min(carbs / 250 * 100,100)}%`;
+        document.getElementById("fat-progress").style.width =`${Math.min(fat / 65 * 100,100)}%`;
+
+        const clearBtn =document.getElementById("clear-foodlog");
+        if(foodLog.length > 0){
+            clearBtn.classList.remove("hidden");
+        }else{
+            clearBtn.classList.add("hidden");
+        }
+    }
+
+    deleteMeal(index){
+        let foodLog = JSON.parse(localStorage.getItem("foodLog")) || [];
+        foodLog.splice(index, 1);
+        localStorage.setItem("foodLog", JSON.stringify(foodLog));
+        this.renderFoodLog();
+    }
+
+    showFoodLog() {
+        document.getElementById("meal-details").classList.add("hidden");
+        document.getElementById("all-recipes-section").classList.add("hidden");
+        document.getElementById("meal-categories-section").classList.add("hidden");
+        document.getElementById("search-filters-section").classList.add("hidden");
+        document.getElementById("products-section").classList.add("hidden");
+        document.getElementById("foodlog-section").classList.remove("hidden");
+        this.renderFoodLog();
     }
 
     renderMealDetails(meal){
