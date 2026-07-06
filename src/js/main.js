@@ -1,4 +1,4 @@
-class Navigation {
+class Navigation{
     constructor(){
         this.navLinks = document.querySelectorAll('.nav-link');
         this.sections = {
@@ -36,7 +36,6 @@ class Navigation {
     }
 }
 
-
 class NutriPlanApp{
     constructor(){
         this.recipesGrid = document.getElementById('recipesGrid');
@@ -63,19 +62,58 @@ class NutriPlanApp{
             this.addMealToFoodLog();
         });
 
+        document.getElementById("meals-btn").addEventListener("click", () => {
+            this.showMeals();
+        });
+
         document.getElementById("foodlog-btn").addEventListener("click", () => {
             this.showFoodLog();
+        });
+
+        document.getElementById("products-btn").addEventListener("click", () => {
+            this.showProducts();
         });
 
         document.getElementById("clear-foodlog").addEventListener("click", () => {
             this.clearFoodLog();
         });
+
+        document.getElementById("search-product-btn").addEventListener("click", () => {
+            const query = document
+            .getElementById("product-search-input")
+            .value.trim();
+            if(query){
+                this.searchProducts(query);
+            }
+        });
+
+        document.getElementById("lookup-barcode-btn").addEventListener("click", () => {
+            const code = document
+            .getElementById("barcode-input")
+            .value.trim();
+            if(code){
+                this.searchByBarcode(code);
+            }
+        });
+        
     }
     
     clearFoodLog(){
         localStorage.removeItem("foodLog");
         this.renderFoodLog();
     }
+
+    showMeals(){
+    document.getElementById("meal-details").classList.add("hidden");
+    document.getElementById("foodlog-section").classList.add("hidden");
+    document.getElementById("products-section").classList.add("hidden");
+
+    document.getElementById("all-recipes-section").classList.remove("hidden");
+    document.getElementById("meal-categories-section").classList.remove("hidden");
+    document.getElementById("search-filters-section").classList.remove("hidden");
+
+    document.getElementById("areas-grid").style.display = "flex";
+}
 
     addMealEvents(){
         this.recipesGrid.addEventListener("click", (e) => {
@@ -86,10 +124,10 @@ class NutriPlanApp{
         });
     }
 
-    async showMealDetails(id) {
+    async showMealDetails(id){
         const meals = await this.fetchMeals(`/meals/${id}`);
         console.log(meals);
-        if (!meals || meals.length === 0) {
+        if(!meals || meals.length === 0){
             alert("Meal not found");
             return;
         }
@@ -122,12 +160,9 @@ class NutriPlanApp{
             },
             body: JSON.stringify({
                 recipeName: meal.name,
-                ingredients: meal.ingredients.map(item =>
-                    `${item.measure} ${item.ingredient}`
-                )
+                ingredients: meal.ingredients.map(item =>`${item.measure} ${item.ingredient}`)
             })
         });
-
         const data = await response.json();
         return data.data;
     }
@@ -264,7 +299,7 @@ class NutriPlanApp{
         this.renderFoodLog();
     }
 
-    showFoodLog() {
+    showFoodLog(){
         document.getElementById("meal-details").classList.add("hidden");
         document.getElementById("all-recipes-section").classList.add("hidden");
         document.getElementById("meal-categories-section").classList.add("hidden");
@@ -272,6 +307,15 @@ class NutriPlanApp{
         document.getElementById("products-section").classList.add("hidden");
         document.getElementById("foodlog-section").classList.remove("hidden");
         this.renderFoodLog();
+    }
+
+    showProducts(){
+        document.getElementById("products-section").classList.remove("hidden");
+        document.getElementById("foodlog-section").classList.add("hidden");
+        document.getElementById("meal-details").classList.add("hidden");
+        document.getElementById("all-recipes-section").classList.add("hidden");
+        document.getElementById("meal-categories-section").classList.add("hidden");
+        document.getElementById("search-filters-section").classList.add("hidden");
     }
 
     renderMealDetails(meal){
@@ -427,34 +471,34 @@ class NutriPlanApp{
     const categoriesGrid = document.getElementById("categories-grid");
     categoriesGrid.innerHTML = "";
 
-        const colors = [
-        "from-red-50 to-pink-50 border-red-200 from-red-400 to-red-500",
-        "from-orange-50 to-amber-50 border-orange-200 from-orange-400 to-orange-500",
-        "from-pink-50 to-rose-50 border-pink-200 from-pink-400 to-pink-500",
-        "from-yellow-50 to-orange-50 border-yellow-200 from-yellow-400 to-yellow-500",
-        "from-blue-50 to-cyan-50 border-blue-200 from-blue-400 to-blue-500",
-        "from-green-50 to-emerald-50 border-green-200 from-green-400 to-green-500",
-        "from-cyan-50 to-teal-50 border-cyan-200 from-cyan-400 to-cyan-500",
-        "from-gray-50 to-slate-50 border-gray-200 from-gray-400 to-gray-500",
-        "from-lime-50 to-green-50 border-lime-200 from-lime-400 to-lime-500",
-        "from-violet-50 to-purple-50 border-violet-200 from-violet-400 to-violet-500",
-        "from-indigo-50 to-blue-50 border-indigo-200 from-indigo-400 to-indigo-500",
-        "from-teal-50 to-cyan-50 border-teal-200 from-teal-400 to-teal-500"
+    const styles = [
+        { bg: "bg-red-50", border: "border-red-200", icon: "bg-red-500", iconClass: "fa-drumstick-bite" },
+        { bg: "bg-amber-50", border: "border-amber-200", icon: "bg-amber-500", iconClass: "fa-drumstick-bite" },
+        { bg: "bg-pink-50", border: "border-pink-200", icon: "bg-pink-500", iconClass: "fa-birthday-cake" },
+        { bg: "bg-orange-50", border: "border-orange-200", icon: "bg-orange-500", iconClass: "fa-drumstick-bite" },
+        { bg: "bg-slate-100", border: "border-green-200", icon: "bg-green-500", iconClass: "fa-bowl-rice" },
+        { bg: "bg-amber-50", border: "border-amber-200", icon: "bg-lime-500", iconClass: "fa-bowl-food" },
+        { bg: "bg-red-50", border: "border-red-200", icon: "bg-red-500", iconClass: "fa-bacon" },
+        { bg: "bg-lime-50", border: "border-lime-200", icon: "bg-yellow-500", iconClass: "fa-fish" },
+        { bg: "bg-green-50", border: "border-green-200", icon: "bg-emerald-500", iconClass: "fa-bowl-food" },
+        { bg: "bg-red-50", border: "border-red-200", icon: "bg-red-500", iconClass: "fa-utensils" },
+        { bg: "bg-green-50", border: "border-green-200", icon: "bg-emerald-500", iconClass: "fa-leaf" },
+        { bg: "bg-lime-50", border: "border-lime-200", icon: "bg-lime-500", iconClass: "fa-seedling" },
     ];
 
     categories.slice(0, 12).forEach((category, index) => {
+        const style = styles[index % styles.length];
         const categoryCard = `
             <div
-                class="category-card bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-3 border border-emerald-200 hover:border-emerald-400 hover:shadow-md cursor-pointer transition-all group"
+                class="category-card ${style.bg} rounded-xl p-3 border ${style.border} hover:shadow-md cursor-pointer transition-all group"
                 data-category="${category.name}"
             >
                 <div class="flex items-center gap-2.5">
                     <div
-                        class="text-white w-9 h-9 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm"
+                        class="text-white w-9 h-9 ${style.icon} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm"
                     >
-                        <i class="fa-solid fa-drumstick-bite"></i>
+                        <i class="fa-solid ${style.iconClass}"></i>
                     </div>
-
                     <div>
                         <h3 class="text-sm font-bold text-gray-900">
                             ${category.name}
@@ -468,7 +512,7 @@ class NutriPlanApp{
         });
     }
 
-    addCategoryEvents() {
+    addCategoryEvents(){
         const categoriesGrid = document.getElementById("categories-grid");
 
         categoriesGrid.addEventListener("click", (e) => {
@@ -489,7 +533,7 @@ class NutriPlanApp{
         this.renderAreas(areas);
     }
 
-    renderAreas(areas) {
+    renderAreas(areas){
         const areasGrid = document.getElementById("areas-grid");
         areasGrid.innerHTML = "";
         areasGrid.innerHTML = `
@@ -508,7 +552,7 @@ class NutriPlanApp{
         });
     }
 
-    addAreaEvents() {
+    addAreaEvents(){
         const areasGrid = document.getElementById("areas-grid");
 
         areasGrid.addEventListener("click", (e) => {
@@ -520,12 +564,120 @@ class NutriPlanApp{
         });
     }
 
-    async filterByArea(area) {
+    async filterByArea(area){
         await this.fetchAndDisplayMeals(`/meals/filter?area=${area}`);
     }
 
-    
+    async searchProducts(query){
+        try{
+            const response = await fetch(
+                `${this.baseUrl}/products/search?q=${query}`,
+                {
+                    headers:{
+                        "x-api-key":"cFfwEE3PGV0MmSVeoJNajw1qee1Can6UdL6uqeQu"
+                    }
+                }
+            );
+            const data = await response.json();
+            this.renderProducts(data.results);
+        }catch(err){
+            console.log(err);
+        }
+    }
 
+    async searchByBarcode(code){
+        try{
+            const response = await fetch(
+                `${this.baseUrl}/products/barcode/${code}`,
+                {
+                    headers:{
+                        "x-api-key":"cFfwEE3PGV0MmSVeoJNajw1qee1Can6UdL6uqeQu"
+                    }
+                }
+            );
+            const data = await response.json();
+            this.renderProducts([data.result]);
+        }catch(err){
+            console.log(err);
+        }
+
+    }
+
+    renderProducts(products){
+        const grid =document.getElementById("products-grid");
+        grid.innerHTML="";
+        document.getElementById("products-count").textContent =
+        `${products.length} products found`;
+        products.forEach(product=>{
+            grid.innerHTML +=`
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <h3 class="font-bold text-lg">
+                    ${product.name}
+                </h3>
+                <p class="text-sm text-gray-500 mb-3">
+                    Barcode :
+                    ${product.barcode}
+                </p>
+                <span
+                class="inline-block px-3 py-1 rounded bg-green-100 text-green-700 mb-3">
+                    Nutri Score
+                    ${product.nutritionGrade.toUpperCase()}
+                </span>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div>
+                        Calories
+                        <br>
+                        <b>${product.nutrients.calories}</b>
+                    </div>
+                    <div>
+                        Protein
+                        <br>
+                        <b>${product.nutrients.protein} g</b>
+                    </div>
+                    <div>
+                        Carbs
+                        <br>
+                        <b>${product.nutrients.carbs} g</b>
+                    </div>
+                    <div>
+                        Fat
+                        <br>
+                        <b>${product.nutrients.fat} g</b>
+                    </div>
+                </div>
+                <button
+                    class="add-product-btn w-full bg-emerald-600 text-white py-2 rounded-lg"
+                    data-name="${product.name}"
+                    data-calories="${product.nutrients.calories}"
+                    data-protein="${product.nutrients.protein}"
+                    data-carbs="${product.nutrients.carbs}"
+                    data-fat="${product.nutrients.fat}"
+                >
+                    Add To Food Log
+                </button>
+            </div>
+            `;
+        });
+        this.addProductEvents();
+    }
+
+    addProductEvents(){
+        document.querySelectorAll(".add-product-btn").forEach(btn=>{
+            btn.addEventListener("click",(e)=>{
+                let foodLog =JSON.parse(localStorage.getItem("foodLog")) || [];
+                foodLog.push({
+                    name:e.target.dataset.name,
+                    calories:Number(e.target.dataset.calories),
+                    protein:Number(e.target.dataset.protein),
+                    carbs:Number(e.target.dataset.carbs),
+                    fat:Number(e.target.dataset.fat),
+                    image:"https://placehold.co/100x100"
+                });
+                localStorage.setItem("foodLog",JSON.stringify(foodLog));
+                alert("Product Added");
+            });
+        });
+    }
 
 }
 
