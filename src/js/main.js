@@ -29,18 +29,21 @@ class NutriPlanApp{
     });
 
     document.getElementById("meals-btn").addEventListener("click", () => {
-      this.setActiveNav("meals-btn");
-      this.showMeals();
+        this.setActiveNav("meals-btn");
+        this.updateURL("meals");
+        this.showMeals();
     });
 
     document.getElementById("foodlog-btn").addEventListener("click", () => {
-      this.setActiveNav("foodlog-btn");
-      this.showFoodLog();
+        this.setActiveNav("foodlog-btn");
+        this.updateURL("foodlog");
+        this.showFoodLog();
     });
 
     document.getElementById("products-btn").addEventListener("click", () => {
-      this.setActiveNav("products-btn");
-      this.showProducts();
+        this.setActiveNav("products-btn");
+        this.updateURL("scanner");
+        this.showProducts();
     });
 
     document.getElementById("clear-foodlog").addEventListener("click", () => {
@@ -68,6 +71,10 @@ class NutriPlanApp{
   clearFoodLog(){
     localStorage.removeItem("foodLog");
     this.renderFoodLog();
+  }
+
+  updateURL(page){
+    history.pushState({}, "", `?page=${page}`);
   }
 
   showMeals(){
