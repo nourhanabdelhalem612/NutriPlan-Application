@@ -152,10 +152,10 @@
                 <i class="fa-solid fa-bars"></i>
               </button>
               <div>
-                <h1 class="text-2xl font-bold text-gray-900">
+                <h1  id="page-title" class="text-2xl font-bold text-gray-900">
                   Meals & Recipes
                 </h1>
-                <p class="text-sm text-gray-500 mt-1">
+                <p  id="page-description" class="text-sm text-gray-500 mt-1">
                   Discover delicious and nutritious recipes tailored for you
                 </p>
               </div>
@@ -243,7 +243,7 @@
             <div>
               <h2 class="text-2xl font-bold text-gray-900">All Recipes</h2>
               <p id="recipes-count" class="text-sm text-gray-600 mt-1">
-                Showing 25 recipes
+                Showing 0 recipes
               </p>
             </div>
             <div class="flex items-center gap-3">
@@ -647,8 +647,8 @@
                     class="text-center py-4 mb-4 bg-linear-to-br from-emerald-50 to-teal-50 rounded-xl"
                   >
                     <p class="text-sm text-gray-600">Calories per serving</p>
-                    <p class="text-4xl font-bold text-emerald-600">485</p>
-                    <p class="text-xs text-gray-500 mt-1">Total: 1940 cal</p>
+                    <p id="herocalories" class="text-4xl font-bold text-emerald-600">0</p>
+                    <p id="total-calories" class="text-xs text-gray-500 mt-1">Total: 0 cal</p>
                   </div>
 
                   <div class="space-y-4">
@@ -661,6 +661,7 @@
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2">
                       <div
+                      id="protein-bar"
                         class="bg-emerald-500 h-2 rounded-full"
                         style="width: 84%"
                       ></div>
@@ -675,6 +676,7 @@
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2">
                       <div
+                      id="carbs-bar"
                         class="bg-blue-500 h-2 rounded-full"
                         style="width: 17%"
                       ></div>
@@ -689,6 +691,7 @@
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2">
                       <div
+                      id="fat-bar"
                         class="bg-purple-500 h-2 rounded-full"
                         style="width: 12%"
                       ></div>
@@ -703,6 +706,7 @@
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2">
                       <div
+                      id="fiber-bar"
                         class="bg-orange-500 h-2 rounded-full"
                         style="width: 14%"
                       ></div>
@@ -717,6 +721,7 @@
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2">
                       <div
+                      id="sugar-bar"
                         class="bg-pink-500 h-2 rounded-full"
                         style="width: 24%"
                       ></div>
@@ -755,7 +760,7 @@
         <div class="max-w-7xl mx-auto">
           <!-- Search Header -->
           <div
-            class="hidden bg-linear-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 mb-6 text-white"
+            class="bg-linear-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 mb-6 text-white"
           >
             <h2 class="text-2xl font-bold mb-2">
               <i class="fa-solid fa-barcode mr-2"></i>
@@ -1032,7 +1037,7 @@
                   <span class="text-sm font-semibold text-gray-700"
                     >Calories</span
                   >
-                  <span id="total-calories" class="text-sm text-gray-500">0 / 2000 kcal</span>
+                  <span id="totalCalories" class="text-sm text-gray-500">0 / 2000 kcal</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
